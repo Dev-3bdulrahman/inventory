@@ -1,0 +1,85 @@
+<?php
+
+return [
+    'inventory' => 'Inventory Management',
+    'warehouses' => 'Warehouses',
+    'stock' => 'Stock Balances',
+    'adjustments' => 'Stock Adjustments',
+    'transfers' => 'Stock Transfers',
+    'moves' => 'Stock Moves',
+
+    // Warehouses
+    'manage_warehouses' => 'Manage and define storage locations',
+    'add_warehouse' => 'Add Warehouse',
+    'edit_warehouse' => 'Edit Warehouse',
+    'warehouse_name' => 'Warehouse Name',
+    'warehouse_code' => 'Warehouse Code',
+    'address' => 'Address / Location',
+    'status' => 'Status',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'is_main' => 'Main Warehouse',
+    'branch' => 'Branch',
+    'select_branch' => 'Select Branch',
+    'no_warehouses' => 'No warehouses match your search.',
+
+    // Stock
+    'manage_stock' => 'Track product quantities and balances in warehouses',
+    'sku' => 'SKU',
+    'product' => 'Product',
+    'warehouse' => 'Warehouse',
+    'quantity' => 'Quantity Available',
+    'average_cost' => 'Average Cost',
+    'no_stock' => 'No stock balances match your search.',
+
+    // Adjustments
+    'manage_adjustments' => 'Manual stock adjustments and periodic counting values',
+    'add_adjustment' => 'Add Stock Adjustment',
+    'adjustment_number' => 'Adjustment Number',
+    'adjustment_date' => 'Adjustment Date',
+    'addition' => 'Addition (Surplus)',
+    'subtraction' => 'Subtraction (Deficit)',
+    'adjustment_type' => 'Movement Type',
+    'no_adjustments' => 'No stock adjustments match your search.',
+
+    // Transfers
+    'manage_transfers' => 'Transfer items and goods between company warehouses',
+    'add_transfer' => 'Add Stock Transfer',
+    'transfer_number' => 'Transfer Number',
+    'transfer_date' => 'Transfer Date',
+    'from_warehouse' => 'From Warehouse',
+    'to_warehouse' => 'To Warehouse',
+    'select_warehouse' => 'Select Warehouse',
+    'no_transfers' => 'No stock transfers match your search.',
+
+    // Moves
+    'manage_moves' => 'Complete audit log of warehouse stock inputs and outputs',
+    'move_type' => 'Movement Type',
+    'in' => 'IN (Input)',
+    'out' => 'OUT (Output)',
+    'source_type' => 'Source Document',
+    'reference' => 'Reference / Number',
+    'date' => 'Move Date',
+    'no_moves' => 'No stock moves recorded.',
+
+    // Form / General
+    'cancel' => 'Cancel',
+    'save' => 'Save',
+    'delete' => 'Delete',
+    'notes' => 'Notes / Reason',
+    'search' => 'Search',
+    'search_placeholder' => 'Search by name, code, or number...',
+    'actions' => 'Actions',
+    'success_created' => 'Saved successfully',
+    'success_updated' => 'Updated successfully',
+    'success_deleted' => 'Deleted successfully',
+    'draft' => 'Draft',
+    'completed' => 'Completed & Confirmed',
+    'in_transit' => 'In Transit',
+    'cancelled' => 'Cancelled',
+    'items' => 'Linked Items',
+    'add_item' => 'Add Item',
+    'remove' => 'Remove',
+    'unit_cost' => 'Unit Cost',
+    'select_product' => 'Select Product',
+];

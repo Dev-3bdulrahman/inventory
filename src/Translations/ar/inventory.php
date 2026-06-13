@@ -1,0 +1,85 @@
+<?php
+
+return [
+    'inventory' => 'إدارة المخازن والمخزون',
+    'warehouses' => 'المستودعات والمخازن',
+    'stock' => 'أرصدة المخزون',
+    'adjustments' => 'تسويات المخزون',
+    'transfers' => 'التحويلات بين المخازن',
+    'moves' => 'حركات المخزون',
+
+    // Warehouses
+    'manage_warehouses' => 'إدارة وتعريف المستودعات ومستويات التخزين',
+    'add_warehouse' => 'إضافة مستودع',
+    'edit_warehouse' => 'تعديل مستودع',
+    'warehouse_name' => 'اسم المستودع',
+    'warehouse_code' => 'كود المستودع',
+    'address' => 'العنوان والموقع الجغرافي',
+    'status' => 'الحالة',
+    'active' => 'نشط',
+    'inactive' => 'غير نشط',
+    'is_main' => 'المستودع الرئيسي',
+    'branch' => 'الفرع',
+    'select_branch' => 'اختر الفرع',
+    'no_warehouses' => 'لا توجد مستودعات تطابق بحثك.',
+
+    // Stock
+    'manage_stock' => 'متابعة كميات وأرصدة المنتجات في المستودعات',
+    'sku' => 'رمز السلعة (SKU)',
+    'product' => 'المنتج',
+    'warehouse' => 'المستودع',
+    'quantity' => 'الكمية المتوفرة',
+    'average_cost' => 'متوسط التكلفة',
+    'no_stock' => 'لا توجد أرصدة مخزون تطابق بحثك.',
+
+    // Adjustments
+    'manage_adjustments' => 'عمليات التسوية اليدوية والكميات المعدلة للفحص الدوري',
+    'add_adjustment' => 'إضافة تسوية مخزنية',
+    'adjustment_number' => 'رقم التسوية',
+    'adjustment_date' => 'تاريخ التسوية',
+    'addition' => 'إضافة مخزون',
+    'subtraction' => 'خصم/عجز مخزون',
+    'adjustment_type' => 'نوع الحركة',
+    'no_adjustments' => 'لا توجد تسويات مخزنية تطابق بحثك.',
+
+    // Transfers
+    'manage_transfers' => 'تحويل ونقل البضائع والمواد بين مستودعات الشركة',
+    'add_transfer' => 'إضافة طلب نقل',
+    'transfer_number' => 'رقم النقل',
+    'transfer_date' => 'تاريخ النقل',
+    'from_warehouse' => 'من مستودع',
+    'to_warehouse' => 'إلى مستودع',
+    'select_warehouse' => 'اختر المستودع',
+    'no_transfers' => 'لا توجد عمليات نقل بضائع تطابق بحثك.',
+
+    // Moves
+    'manage_moves' => 'سجل كامل بحركات الدخول والخروج من المخازن بالتفصيل',
+    'move_type' => 'نوع الحركة',
+    'in' => 'داخل (وارد)',
+    'out' => 'خارج (صادر)',
+    'source_type' => 'المستند المصدر',
+    'reference' => 'المرجع / الرقم',
+    'date' => 'تاريخ الحركة',
+    'no_moves' => 'لا توجد حركات مخزون مسجلة.',
+
+    // Form / General
+    'cancel' => 'إلغاء',
+    'save' => 'حفظ',
+    'delete' => 'حذف',
+    'notes' => 'الملاحظات / الأسباب',
+    'search' => 'بحث',
+    'search_placeholder' => 'بحث بالاسم، الكود، أو الرقم...',
+    'actions' => 'العمليات',
+    'success_created' => 'تم الحفظ بنجاح',
+    'success_updated' => 'تم التحديث بنجاح',
+    'success_deleted' => 'تم الحذف بنجاح',
+    'draft' => 'مسودة',
+    'completed' => 'مكتمل ومعتمد',
+    'in_transit' => 'قيد النقل',
+    'cancelled' => 'ملغي',
+    'items' => 'العناصر المرتبطة',
+    'add_item' => 'إضافة عنصر',
+    'remove' => 'إزالة',
+    'unit_cost' => 'تكلفة الوحدة',
+    'select_product' => 'اختر المنتج',
+];

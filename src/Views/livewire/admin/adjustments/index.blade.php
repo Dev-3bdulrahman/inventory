@@ -1,0 +1,204 @@
+<div class="p-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('inventory::inventory.adjustments') }}</h2>
+            <p class="text-gray-500 text-sm mt-1">{{ __('inventory::inventory.manage_adjustments') }}</p>
+        </div>
+        <button wire:click="openCreateModal"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>{{ __('inventory::inventory.add_adjustment') }}</span>
+        </button>
+    </div>
+
+    <!-- Filters Panel -->
+    <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-4 mb-6 shadow-sm">
+        <div class="flex flex-wrap items-end gap-4">
+            <!-- Search -->
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase">{{ __('inventory::inventory.search') }}</label>
+                <div class="relative">
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="{{ __('inventory::inventory.search_placeholder') }}"
+                        class="w-full text-right pl-3 pr-10 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">{{ __('inventory::inventory.adjustment_number') }}</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">{{ __('inventory::inventory.warehouse') }}</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">{{ __('inventory::inventory.adjustment_date') }}</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">المستخدم</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">{{ __('inventory::inventory.status') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
+                    @forelse($adjustments as $adj)
+                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                            <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                                {{ $adj->adjustment_number }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                {{ $adj->warehouse?->name }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $adj->adjustment_date->format('Y-m-d') }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ $adj->creator?->name }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400">
+                                    {{ __('inventory::inventory.' . $adj->status) }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                <span>{{ __('inventory::inventory.no_adjustments') }}</span>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if($adjustments->hasPages())
+            <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-800">
+                {{ $adjustments->links() }}
+            </div>
+        @endif
+    </div>
+
+    <!-- Create Modal -->
+    <div x-data="{ open: @entangle('showFormModal') }" x-show="open" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div @click="open = false" class="fixed inset-0 bg-gray-500/75 dark:bg-gray-950/75 transition-opacity"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            <div class="inline-block align-middle bg-white dark:bg-gray-900 rounded-xl text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-gray-100 dark:border-gray-800">
+                <form wire:submit.prevent="save">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6 border-b border-gray-50 dark:border-gray-800 pb-4">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                {{ __('inventory::inventory.add_adjustment') }}
+                            </h3>
+                            <button type="button" @click="open = false" class="text-gray-400 hover:text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Form Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('inventory::inventory.warehouse') }} *</label>
+                                <select wire:model="warehouse_id" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                    <option value="">{{ __('inventory::inventory.select_warehouse') }}</option>
+                                    @foreach($warehouses as $w)
+                                        <option value="{{ $w->id }}">{{ $w->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('warehouse_id') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('inventory::inventory.adjustment_date') }} *</label>
+                                <input type="date" wire:model="adjustment_date" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                @error('adjustment_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('inventory::inventory.notes') }}</label>
+                            <textarea wire:model="notes" rows="2" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"></textarea>
+                            @error('notes') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Dynamic Items Section -->
+                        <div class="border-t border-gray-100 dark:border-gray-800 pt-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-bold text-gray-900 dark:text-white">{{ __('inventory::inventory.items') }}</h4>
+                                <button type="button" wire:click="addItem" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
+                                    <span>{{ __('inventory::inventory.add_item') }}</span>
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                @foreach($items as $index => $item)
+                                    <div class="flex flex-wrap md:flex-nowrap gap-4 items-end bg-gray-50/50 dark:bg-gray-850 p-4 rounded-lg border border-gray-100 dark:border-gray-800">
+                                        <!-- Product select -->
+                                        <div class="flex-1 min-w-[200px]">
+                                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{{ __('inventory::inventory.product') }} *</label>
+                                            <select wire:model="items.{{ $index }}.product_id" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                                <option value="">{{ __('inventory::inventory.select_product') }}</option>
+                                                @foreach($products as $p)
+                                                    <option value="{{ $p->id }}">{{ $p->name }} ({{ $p->sku }})</option>
+                                                @endforeach
+                                            </select>
+                                            @error('items.'.$index.'.product_id') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <!-- Type -->
+                                        <div class="w-full md:w-40">
+                                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{{ __('inventory::inventory.adjustment_type') }} *</label>
+                                            <select wire:model="items.{{ $index }}.type" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                                <option value="addition">{{ __('inventory::inventory.addition') }}</option>
+                                                <option value="subtraction">{{ __('inventory::inventory.subtraction') }}</option>
+                                            </select>
+                                            @error('items.'.$index.'.type') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <!-- Quantity -->
+                                        <div class="w-full md:w-32">
+                                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{{ __('inventory::inventory.quantity') }} *</label>
+                                            <input type="number" step="0.0001" wire:model="items.{{ $index }}.quantity" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                            @error('items.'.$index.'.quantity') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <!-- Unit Cost -->
+                                        <div class="w-full md:w-32">
+                                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">{{ __('inventory::inventory.unit_cost') }}</label>
+                                            <input type="number" step="0.01" wire:model="items.{{ $index }}.unit_cost" class="w-full py-2 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
+                                            @error('items.'.$index.'.unit_cost') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <!-- Remove Button -->
+                                        <button type="button" wire:click="removeItem({{ $index }})" class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100 dark:border-gray-800">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors">
+                            {{ __('inventory::inventory.save') }}
+                        </button>
+                        <button type="button" @click="open = false" class="px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-semibold transition-colors">
+                            {{ __('inventory::inventory.cancel') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
