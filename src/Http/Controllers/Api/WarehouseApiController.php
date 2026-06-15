@@ -3,14 +3,19 @@
 namespace Dev3bdulrahman\Inventory\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HasApiResponse;
+use Dev3bdulrahman\Inventory\Http\Requests\Api\StoreWarehouseApiRequest;
+use Dev3bdulrahman\Inventory\Http\Requests\Api\UpdateWarehouseApiRequest;
 use Dev3bdulrahman\Inventory\Http\Resources\WarehouseResource;
-use Dev3bdulrahman\Inventory\Services\WarehouseService;
 use Dev3bdulrahman\Inventory\Models\Warehouse;
-use Illuminate\Http\Request;
+use Dev3bdulrahman\Inventory\Services\WarehouseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WarehouseApiController extends Controller
 {
+    use HasApiResponse;
+
     protected WarehouseService $service;
 
     public function __construct(WarehouseService $service)
@@ -20,84 +25,66 @@ class WarehouseApiController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Warehouse::class);
+
         $companyId = session('active_company_id') ?: auth()->user()->company_id;
         $warehouses = $this->service->getCompanyWarehouses($companyId);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Warehouses retrieved successfully'),
-            'data' => WarehouseResource::collection($warehouses),
-            'errors' => []
-        ]);
+        return $this->success(
+            data: WarehouseResource::collection($warehouses),
+            message: 'inventory::inventory.warehouses_retrieved',
+        );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreWarehouseApiRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50',
-            'address' => 'nullable|string',
-            'status' => 'nullable|string|in:active,inactive',
-            'is_main' => 'nullable|boolean',
-        ]);
+        $this->authorize('create', Warehouse::class);
 
+        $validated = $request->validated();
         $validated['company_id'] = session('active_company_id') ?: auth()->user()->company_id;
         $validated['created_by'] = auth()->id();
 
         $warehouse = $this->service->createWarehouse($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Warehouse created successfully'),
-            'data' => new WarehouseResource($warehouse),
-            'errors' => []
-        ], 201);
+        return $this->success(
+            data: new WarehouseResource($warehouse),
+            message: 'inventory::inventory.warehouse_created',
+            code: 201,
+        );
     }
 
-    public function show($id): JsonResponse
+    public function show(Warehouse $warehouse): JsonResponse
     {
-        $warehouse = Warehouse::findOrFail($id);
+        $this->authorize('view', $warehouse);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Warehouse retrieved successfully'),
-            'data' => new WarehouseResource($warehouse),
-            'errors' => []
-        ]);
+        return $this->success(
+            data: new WarehouseResource($warehouse),
+            message: 'inventory::inventory.warehouse_retrieved',
+        );
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(UpdateWarehouseApiRequest $request, Warehouse $warehouse): JsonResponse
     {
-        $warehouse = Warehouse::findOrFail($id);
+        $this->authorize('update', $warehouse);
 
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'code' => 'sometimes|required|string|max:50',
-            'address' => 'nullable|string',
-            'status' => 'nullable|string|in:active,inactive',
-            'is_main' => 'nullable|boolean',
-        ]);
-
+        $validated = $request->validated();
         $this->service->updateWarehouse($warehouse->id, $validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Warehouse updated successfully'),
-            'data' => new WarehouseResource($warehouse->fresh()),
-            'errors' => []
-        ]);
+        return $this->success(
+            data: new WarehouseResource($warehouse->fresh()),
+            message: 'inventory::inventory.warehouse_updated',
+        );
     }
 
-    public function destroy($id): JsonResponse
+    public function destroy(Warehouse $warehouse): JsonResponse
     {
-        $warehouse = Warehouse::findOrFail($id);
+        $this->authorize('delete', $warehouse);
+
         $this->service->deleteWarehouse($warehouse->id);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Warehouse deleted successfully'),
-            'data' => null,
-            'errors' => []
-        ]);
+        return $this->success(
+            data: null,
+            message: 'inventory::inventory.warehouse_deleted',
+        );
     }
 }

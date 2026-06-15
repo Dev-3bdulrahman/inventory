@@ -2,7 +2,19 @@
 
 namespace Dev3bdulrahman\Inventory;
 
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Dev3bdulrahman\Inventory\Events\StockAdjustmentApproved;
+use Dev3bdulrahman\Inventory\Events\StockBelowMinimum;
+use Dev3bdulrahman\Inventory\Listeners\LogStockAdjustment;
+use Dev3bdulrahman\Inventory\Listeners\SendStockAlert;
+use Dev3bdulrahman\Inventory\Models\StockAdjustment;
+use Dev3bdulrahman\Inventory\Models\StockTransfer;
+use Dev3bdulrahman\Inventory\Models\Warehouse;
+use Dev3bdulrahman\Inventory\Policies\StockAdjustmentPolicy;
+use Dev3bdulrahman\Inventory\Policies\StockTransferPolicy;
+use Dev3bdulrahman\Inventory\Policies\WarehousePolicy;
 
 class InventoryServiceProvider extends ServiceProvider
 {
@@ -31,6 +43,15 @@ class InventoryServiceProvider extends ServiceProvider
 
         // Load package translations
         $this->loadTranslationsFrom(__DIR__ . '/Translations', 'inventory');
+
+        // Register Policies
+        Gate::policy(Warehouse::class, WarehousePolicy::class);
+        Gate::policy(StockAdjustment::class, StockAdjustmentPolicy::class);
+        Gate::policy(StockTransfer::class, StockTransferPolicy::class);
+
+        // Register Event Listeners
+        Event::listen(StockBelowMinimum::class, SendStockAlert::class);
+        Event::listen(StockAdjustmentApproved::class, LogStockAdjustment::class);
 
         // Register Livewire Components
         if (class_exists(\Livewire\Livewire::class)) {

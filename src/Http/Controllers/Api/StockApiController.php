@@ -3,15 +3,21 @@
 namespace Dev3bdulrahman\Inventory\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HasApiResponse;
 use Dev3bdulrahman\Inventory\Http\Resources\StockItemResource;
 use Dev3bdulrahman\Inventory\Models\StockItem;
-use Illuminate\Http\Request;
+use Dev3bdulrahman\Inventory\Models\Warehouse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class StockApiController extends Controller
 {
+    use HasApiResponse;
+
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Warehouse::class);
+
         $query = StockItem::query();
 
         if ($request->filled('warehouse_id')) {
@@ -24,11 +30,9 @@ class StockApiController extends Controller
 
         $stock = $query->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => __('Stock balances retrieved successfully'),
-            'data' => StockItemResource::collection($stock),
-            'errors' => []
-        ]);
+        return $this->success(
+            data: StockItemResource::collection($stock),
+            message: 'inventory::inventory.stock_retrieved',
+        );
     }
 }
