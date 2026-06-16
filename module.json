@@ -1,0 +1,11 @@
+{
+    "name": "Inventory",
+    "slug": "inventory",
+    "version": "1.0.0",
+    "description": "Stock & Warehouse Management",
+    "description_ar": "إدارة المخزون والمستودعات",
+    "is_active": true,
+    "provider": "Dev3bdulrahman\\Inventory\\InventoryServiceProvider",
+    "dependencies": [],
+    "order": 4
+}
