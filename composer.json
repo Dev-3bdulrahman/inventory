@@ -2,7 +2,7 @@
   "name": "dev-3bdulrahman/inventory",
   "description": "An Inventory management module for Laravel ERP — warehouses, stock, transfers, adjustments & serial/batch tracking.",
   "type": "library",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "MIT",
   "authors": [
     {
